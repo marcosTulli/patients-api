@@ -21,8 +21,9 @@
     "noFallthroughCasesInSwitch": false,
 
     "paths": {
-    "@/*": ["src/*"],
-    "@users/*": ["src/users/*"]
+    "src/*": ["src/*"],
+    "@users/*": ["src/users/*"],
+    "@auth/*": ["src/auth/*"]
 }
 
   }

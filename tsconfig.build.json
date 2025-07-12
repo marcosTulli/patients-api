@@ -5,8 +5,9 @@
     "rootDir": "./src",
     "baseUrl": ".",
     "paths": {
-      "@": ["src/*"],
-      "@users/*": ["src/users/*"]
+      "src/": ["src/*"],
+      "@users/*": ["src/users/*"],
+      "@auth/*": ["src/auth/*"]
     }
   },
   "exclude": ["node_modules", "dist", "test", "**/*spec.ts"],
