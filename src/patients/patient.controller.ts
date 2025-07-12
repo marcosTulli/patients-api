@@ -7,9 +7,15 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  Patch,
   Post,
 } from '@nestjs/common';
-import { CreatePatientDto, DeleteManyPatientsDto, PatientListDto } from './dto';
+import {
+  CreatePatientDto,
+  DeleteManyPatientsDto,
+  PatientListDto,
+  UpdatePatientDto,
+} from './dto';
 import { PatientsService } from './patient.service';
 import { Patient } from './schema/patient.schema';
 
@@ -55,6 +61,16 @@ export class PatientsController {
     }
     return this.patientsService.createPatient(createPatientDto);
   }
+
+  @Patch(':id')
+  @HttpCode(HttpStatus.OK)
+  async updatePatient(
+    @Param('id') id: string,
+    @Body() updatePatientDto: UpdatePatientDto,
+  ): Promise<Patient> {
+    return this.patientsService.updatePatient(id, updatePatientDto);
+  }
+  j;
 
   @Delete(':id')
   @HttpCode(HttpStatus.OK)

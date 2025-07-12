@@ -8,7 +8,12 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Patient } from './schema/patient.schema';
 import { ApiKeyGuard } from 'src/guards/api-key.guard';
-import { CreatePatientDto, DeleteManyPatientsDto, PatientListDto } from './dto';
+import {
+  CreatePatientDto,
+  DeleteManyPatientsDto,
+  PatientListDto,
+  UpdatePatientDto,
+} from './dto';
 import { PatientQueryBuilder } from './utils';
 import { MongoServerError } from 'mongodb';
 
@@ -58,6 +63,32 @@ export class PatientsService {
         throw new BadRequestException('Patient with this email already exists');
       }
       throw new BadRequestException('Failed to create patient');
+    }
+  }
+
+  async updatePatient(
+    id: string,
+    updatePatientDto: UpdatePatientDto,
+  ): Promise<Patient> {
+    try {
+      const updatedPatient = await this.patientModel
+        .findByIdAndUpdate(id, updatePatientDto, {
+          new: true,
+          runValidators: true,
+        })
+        .exec();
+
+      if (!updatedPatient) {
+        throw new BadRequestException(`Patient with id ${id} not found`);
+      }
+
+      return updatedPatient;
+    } catch (error) {
+      const mongoError = error as MongoServerError;
+      if (mongoError.code === 11000) {
+        throw new BadRequestException('Patient with this email already exists');
+      }
+      throw new BadRequestException('Failed to update patient');
     }
   }
 
