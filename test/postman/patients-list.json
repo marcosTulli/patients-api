@@ -1,0 +1,439 @@
+{
+  "info": {
+    "name": "Patient List API Tests",
+    "description": "Comprehensive test collection for patient list endpoint with pagination, filtering, and sorting",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "apiKey",
+      "value": "API KEY",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Valid Requests",
+      "item": [
+        {
+          "name": "Get All Patients - Default Parameters",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{apiKey}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/patients",
+              "host": ["{{baseUrl}}"],
+              "path": ["patients"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has patients and total', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('patients');",
+                  "    pm.expect(jsonData).to.have.property('total');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Basic Pagination - Page 1, Take 5",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{apiKey}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pagination\": {\n    \"page\": 1,\n    \"take\": 5\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/patients/list",
+              "host": ["{{baseUrl}}"],
+              "path": ["patients", "list"]
+            }
+          }
+        },
+        {
+          "name": "Filter by First Name",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{apiKey}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"filter\": {\n    \"firstName\": \"John\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/patients/list",
+              "host": ["{{baseUrl}}"],
+              "path": ["patients", "list"]
+            }
+          }
+        },
+        {
+          "name": "Sort by First Name ASC",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{apiKey}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sort\": {\n    \"field\": \"firstName\",\n    \"direction\": \"asc\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/patients/list",
+              "host": ["{{baseUrl}}"],
+              "path": ["patients", "list"]
+            }
+          }
+        },
+        {
+          "name": "Complete Request - Pagination + Filter + Sort",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{apiKey}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pagination\": {\n    \"page\": 1,\n    \"take\": 20\n  },\n  \"filter\": {\n    \"firstName\": \"John\",\n    \"dobFrom\": \"1990-01-01\"\n  },\n  \"sort\": {\n    \"field\": \"lastName\",\n    \"direction\": \"asc\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/patients/list",
+              "host": ["{{baseUrl}}"],
+              "path": ["patients", "list"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bad Requests - Invalid Parameters",
+      "item": [
+        {
+          "name": "Invalid Page - Zero",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{apiKey}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pagination\": {\n    \"page\": 0,\n    \"take\": 10\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/patients/list",
+              "host": ["{{baseUrl}}"],
+              "path": ["patients", "list"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Invalid Take - Exceeds Maximum (51)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{apiKey}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pagination\": {\n    \"page\": 1,\n    \"take\": 51\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/patients/list",
+              "host": ["{{baseUrl}}"],
+              "path": ["patients", "list"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Invalid Date Format - dobFrom",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{apiKey}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"filter\": {\n    \"dobFrom\": \"invalid-date\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/patients/list",
+              "host": ["{{baseUrl}}"],
+              "path": ["patients", "list"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Invalid Sort Field",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{apiKey}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sort\": {\n    \"field\": \"invalidField\",\n    \"direction\": \"asc\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/patients/list",
+              "host": ["{{baseUrl}}"],
+              "path": ["patients", "list"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Missing API Key",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pagination\": {\n    \"page\": 1,\n    \"take\": 10\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/patients/list",
+              "host": ["{{baseUrl}}"],
+              "path": ["patients", "list"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 401 or 403', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([401, 403]);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Edge Cases",
+      "item": [
+        {
+          "name": "Empty Request Body",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{apiKey}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/patients/list",
+              "host": ["{{baseUrl}}"],
+              "path": ["patients", "list"]
+            }
+          }
+        },
+        {
+          "name": "Null Filter",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{apiKey}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"filter\": null\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/patients/list",
+              "host": ["{{baseUrl}}"],
+              "path": ["patients", "list"]
+            }
+          }
+        },
+        {
+          "name": "Very Large Page Number",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{apiKey}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pagination\": {\n    \"page\": 999999,\n    \"take\": 10\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/patients/list",
+              "host": ["{{baseUrl}}"],
+              "path": ["patients", "list"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
