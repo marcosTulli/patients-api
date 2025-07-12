@@ -38,7 +38,6 @@ export default tseslint.config(
       '@typescript-eslint/no-floating-promises': 'warn',
       '@typescript-eslint/no-unsafe-argument': 'warn',
       'import/no-unresolved': 'error',
-      'import/order': ['warn', { 'newlines-between': 'always' }],
     },
   }
 );
