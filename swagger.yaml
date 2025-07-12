@@ -1,0 +1,263 @@
+openapi: 3.0.3
+info:
+  title: Patient API
+  description: API for managing patient records
+  version: 1.0.0
+servers:
+  - url: https://your-api-url.com
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+  schemas:
+    Patient:
+      type: object
+      properties:
+        _id:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        phoneNumber:
+          type: string
+        dob:
+          type: string
+          format: date
+    PaginationDto:
+      type: object
+      properties:
+        page:
+          type: integer
+          minimum: 1
+        take:
+          type: integer
+          minimum: 1
+          maximum: 50
+    PatientFilterDto:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        phoneNumber:
+          type: string
+        dobFrom:
+          type: string
+          format: date
+        dobTo:
+          type: string
+          format: date
+    SortDirection:
+      type: string
+      enum: [asc, desc]
+    PatientSortDto:
+      type: object
+      properties:
+        field:
+          type: string
+          enum: [firstName, lastName, email, phoneNumber, dob, _id]
+        direction:
+          $ref: '#/components/schemas/SortDirection'
+    PatientListDto:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/PaginationDto'
+        filter:
+          $ref: '#/components/schemas/PatientFilterDto'
+        sort:
+          $ref: '#/components/schemas/PatientSortDto'
+    CreatePatientDto:
+      type: object
+      required: [firstName, lastName, email, phoneNumber, dob]
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        phoneNumber:
+          type: string
+        dob:
+          type: string
+          format: date
+    UpdatePatientDto:
+      allOf:
+        - $ref: '#/components/schemas/CreatePatientDto'
+    DeleteManyPatientsDto:
+      type: object
+      required: [ids]
+      properties:
+        ids:
+          type: array
+          items:
+            type: string
+
+security:
+  - ApiKeyAuth: []
+
+paths:
+  /auth/login:
+    post:
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        200:
+          description: Login successful
+        401:
+          description: Invalid credentials
+
+  /auth/signup:
+    post:
+      summary: Sign up
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password, firstName, lastName]
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+      responses:
+        201:
+          description: User created
+
+  /patients:
+    get:
+      summary: Get all patients
+      responses:
+        200:
+          description: List of patients
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Patient'
+
+  /patients/{id}:
+    get:
+      summary: Get a single patient by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Patient found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Patient'
+        404:
+          description: Patient not found
+
+    patch:
+      summary: Update a patient
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePatientDto'
+      responses:
+        200:
+          description: Patient updated
+
+    delete:
+      summary: Delete a patient
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Patient deleted
+
+  /patients/list:
+    post:
+      summary: Get patients with pagination, filters, and sorting
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatientListDto'
+      responses:
+        200:
+          description: Paginated list of patients
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  patients:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Patient'
+                  total:
+                    type: integer
+
+  /patients/create:
+    post:
+      summary: Create a new patient
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePatientDto'
+      responses:
+        201:
+          description: Patient created
+
+  /patients/delete:
+    post:
+      summary: Delete multiple patients
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteManyPatientsDto'
+      responses:
+        200:
+          description: Patients deleted
