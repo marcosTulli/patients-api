@@ -23,7 +23,8 @@
     "paths": {
     "src/*": ["src/*"],
     "@users/*": ["src/users/*"],
-    "@auth/*": ["src/auth/*"]
+    "@auth/*": ["src/auth/*"],
+    "@common/*": ["src/common/*"]
 }
 
   }

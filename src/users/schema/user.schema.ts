@@ -9,6 +9,9 @@ export enum Roles {
 }
 
 export type UserDocument = User & Document & { _id: Types.ObjectId };
+export interface RequestWithUser extends Request {
+  user: User;
+}
 
 @Schema({ timestamps: true })
 export class User {

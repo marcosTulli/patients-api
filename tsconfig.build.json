@@ -7,7 +7,8 @@
     "paths": {
       "src/": ["src/*"],
       "@users/*": ["src/users/*"],
-      "@auth/*": ["src/auth/*"]
+      "@auth/*": ["src/auth/*"],
+      "@common/*": ["src/common/*"]
     }
   },
   "exclude": ["node_modules", "dist", "test", "**/*spec.ts"],
