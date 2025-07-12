@@ -1,10 +1,11 @@
-import { Injectable, UseGuards } from '@nestjs/common';
+import { BadRequestException, Injectable, UseGuards } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Patient } from './schema/patient.schema';
 import { ApiKeyGuard } from 'src/guards/api-key.guard';
-import { PatientListDto } from './dto';
+import { CreatePatientDto, PatientListDto } from './dto';
 import { PatientQueryBuilder } from './utils';
+import { MongoServerError } from 'mongodb';
 
 @UseGuards(ApiKeyGuard)
 @Injectable()
@@ -32,5 +33,18 @@ export class PatientsService {
       .exec();
 
     return { patients, total };
+  }
+
+  async createPatient(createPatientDto: CreatePatientDto): Promise<Patient> {
+    try {
+      const patient = new this.patientModel(createPatientDto);
+      return await patient.save();
+    } catch (error) {
+      const mongoError = error as MongoServerError;
+      if (mongoError.code === 11000) {
+        throw new BadRequestException('Patient with this email already exists');
+      }
+      throw new BadRequestException('Failed to create patient');
+    }
   }
 }

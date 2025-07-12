@@ -5,7 +5,7 @@ import {
   Get,
   Post,
 } from '@nestjs/common';
-import { PatientListDto } from './dto';
+import { CreatePatientDto, PatientListDto } from './dto';
 import { PatientsService } from './patient.service';
 import { Patient } from './schema/patient.schema';
 
@@ -28,5 +28,12 @@ export class PatientsController {
       );
     }
     return this.patientsService.findAllPaginated(patientListDto);
+  }
+
+  @Post('/create')
+  async createPatient(
+    @Body() createPatientDto: CreatePatientDto,
+  ): Promise<Patient> {
+    return this.patientsService.createPatient(createPatientDto);
   }
 }
