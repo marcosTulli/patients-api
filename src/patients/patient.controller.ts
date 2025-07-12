@@ -5,7 +5,7 @@ import {
   Get,
   Post,
 } from '@nestjs/common';
-import { PatientListDto } from './dto/patient-list.dto';
+import { PatientListDto } from './dto';
 import { PatientsService } from './patient.service';
 import { Patient } from './schema/patient.schema';
 

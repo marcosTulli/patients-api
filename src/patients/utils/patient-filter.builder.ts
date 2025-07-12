@@ -1,6 +1,6 @@
 import { FilterQuery } from 'mongoose';
 import { Patient } from '../schema/patient.schema';
-import { PatientListDto } from '../dto/patient-list.dto';
+import { PatientListDto } from '../dto';
 
 export class PatientFilterBuilder {
   static buildFilter(filter: PatientListDto['filter']): FilterQuery<Patient> {
