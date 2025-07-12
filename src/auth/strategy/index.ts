@@ -33,7 +33,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     } as StrategyOptionsWithoutRequest);
   }
 
-  async validate(payload: JwtPayload): Promise<UserDocument | null> {
+  async validate(payload: JwtPayload): Promise<User | null> {
     return await this.userModel.findById(payload.sub, { password: 0 }).lean();
   }
 }
