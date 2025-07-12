@@ -9,6 +9,7 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import {
   CreatePatientDto,
@@ -18,8 +19,10 @@ import {
 } from './dto';
 import { PatientsService } from './patient.service';
 import { Patient } from './schema/patient.schema';
+import { ApiKeyGuard } from 'src/guards/api-key.guard';
 
 @Controller('patients')
+@UseGuards(ApiKeyGuard)
 export class PatientsController {
   constructor(private readonly patientsService: PatientsService) {}
 

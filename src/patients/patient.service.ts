@@ -2,12 +2,10 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
-  UseGuards,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Patient } from './schema/patient.schema';
-import { ApiKeyGuard } from 'src/guards/api-key.guard';
 import {
   CreatePatientDto,
   DeleteManyPatientsDto,
@@ -17,7 +15,6 @@ import {
 import { PatientQueryBuilder } from './utils';
 import { MongoServerError } from 'mongodb';
 
-@UseGuards(ApiKeyGuard)
 @Injectable()
 export class PatientsService {
   constructor(
