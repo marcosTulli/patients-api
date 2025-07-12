@@ -20,9 +20,6 @@ import {
 import { PatientsService } from './patient.service';
 import { Patient } from './schema/patient.schema';
 import { ApiKeyGuard } from 'src/guards/api-key.guard';
-import { RolesGuard } from 'src/guards/role.guard';
-import { Roles } from 'src/users/schema/user.schema';
-import { RolesAllowed } from 'src/common/decorators/roles.decorator';
 import {
   ApiSecurity,
   ApiTags,
@@ -32,15 +29,22 @@ import {
   ApiParam,
   getSchemaPath,
 } from '@nestjs/swagger';
+import {
+  ReadOnlyOperation,
+  WriteOnlyOperation,
+} from './decorators/patient-decorators';
 
 @ApiTags('patients')
 @ApiSecurity('ApiKeyAuth')
 @Controller('patients')
+// The ApiKeyGuard is applied to all endpoints as a foundational security layer.
 @UseGuards(ApiKeyGuard)
 export class PatientsController {
   constructor(private readonly patientsService: PatientsService) {}
 
   @Get()
+  // This is a read operation, requiring no additional security on top of the class-level guard.
+  @ReadOnlyOperation()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Get all patients' })
   @ApiResponse({
@@ -53,6 +57,8 @@ export class PatientsController {
   }
 
   @Get(':id')
+  // Another read operation. The @ReadOnlyOperation makes the intent clear.
+  @ReadOnlyOperation()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Get a single patient by ID' })
   @ApiParam({ name: 'id', required: true, description: 'Patient ID' })
@@ -66,6 +72,8 @@ export class PatientsController {
   }
 
   @Post('list')
+  // This POST route is also a read operation, so we apply the same decorator.
+  @ReadOnlyOperation()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Get patients with pagination, filters, and sorting',
@@ -94,8 +102,7 @@ export class PatientsController {
   }
 
   @Post('create')
-  @UseGuards(RolesGuard)
-  @RolesAllowed(Roles.Admin)
+  @WriteOnlyOperation()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create a new patient' })
   @ApiBody({ type: CreatePatientDto })
@@ -110,8 +117,8 @@ export class PatientsController {
   }
 
   @Patch(':id')
-  @UseGuards(RolesGuard)
-  @RolesAllowed(Roles.Admin)
+  // A write operation, effortlessly secured by our custom decorator.
+  @WriteOnlyOperation()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Update a patient' })
   @ApiParam({ name: 'id', required: true, description: 'Patient ID' })
@@ -125,8 +132,8 @@ export class PatientsController {
   }
 
   @Delete(':id')
-  @UseGuards(RolesGuard)
-  @RolesAllowed(Roles.Admin)
+  // A write operation, now beautifully declarative.
+  @WriteOnlyOperation()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Delete a patient' })
   @ApiParam({ name: 'id', required: true, description: 'Patient ID' })
@@ -151,8 +158,8 @@ export class PatientsController {
   }
 
   @Post('delete')
-  @UseGuards(RolesGuard)
-  @RolesAllowed(Roles.Admin)
+  // The final write operation, secured and clean.
+  @WriteOnlyOperation()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Delete multiple patients' })
   @ApiBody({ type: DeleteManyPatientsDto })
