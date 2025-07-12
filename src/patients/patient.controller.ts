@@ -2,10 +2,14 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
+  HttpCode,
+  HttpStatus,
+  Param,
   Post,
 } from '@nestjs/common';
-import { CreatePatientDto, PatientListDto } from './dto';
+import { CreatePatientDto, DeleteManyPatientsDto, PatientListDto } from './dto';
 import { PatientsService } from './patient.service';
 import { Patient } from './schema/patient.schema';
 
@@ -14,26 +18,54 @@ export class PatientsController {
   constructor(private readonly patientsService: PatientsService) {}
 
   @Get()
+  @HttpCode(HttpStatus.OK)
   async findAll(): Promise<Patient[]> {
     return this.patientsService.findAll();
   }
 
   @Post('list')
+  @HttpCode(HttpStatus.OK)
   async findAllPaginated(
     @Body() patientListDto: PatientListDto,
   ): Promise<{ patients: Patient[]; total: number }> {
     if (!patientListDto) {
       throw new BadRequestException(
-        `Request body should be: {pagination: required, filter: optional, sort: optional}`,
+        'Request body should be: {pagination: required, filter: optional, sort: optional}',
       );
     }
     return this.patientsService.findAllPaginated(patientListDto);
   }
 
-  @Post('/create')
+  @Post('create')
+  @HttpCode(HttpStatus.CREATED)
   async createPatient(
     @Body() createPatientDto: CreatePatientDto,
   ): Promise<Patient> {
+    if (!createPatientDto) {
+      throw new BadRequestException('Request body is required');
+    }
     return this.patientsService.createPatient(createPatientDto);
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.OK)
+  async deleteOne(
+    @Param('id') id: string,
+  ): Promise<{ deleted: boolean; name?: string }> {
+    if (!id) {
+      throw new BadRequestException('Patient id is required');
+    }
+    return this.patientsService.deleteOnePatient(id);
+  }
+
+  @Post('delete')
+  @HttpCode(HttpStatus.OK)
+  async deleteMany(
+    @Body() dto: DeleteManyPatientsDto,
+  ): Promise<{ deleted: boolean; deletedNames?: string[] }> {
+    if (!dto?.ids || !dto.ids.length) {
+      throw new BadRequestException('Array of patient IDs is required');
+    }
+    return this.patientsService.deleteManyPatients(dto);
   }
 }

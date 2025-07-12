@@ -1,9 +1,14 @@
-import { BadRequestException, Injectable, UseGuards } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  UseGuards,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Patient } from './schema/patient.schema';
 import { ApiKeyGuard } from 'src/guards/api-key.guard';
-import { CreatePatientDto, PatientListDto } from './dto';
+import { CreatePatientDto, DeleteManyPatientsDto, PatientListDto } from './dto';
 import { PatientQueryBuilder } from './utils';
 import { MongoServerError } from 'mongodb';
 
@@ -46,5 +51,41 @@ export class PatientsService {
       }
       throw new BadRequestException('Failed to create patient');
     }
+  }
+
+  async deleteOnePatient(
+    id: string,
+  ): Promise<{ deleted: boolean; name?: string }> {
+    const patient = await this.patientModel.findById(id).exec();
+
+    if (!patient) {
+      throw new NotFoundException(`Patient with ID ${id} not found`);
+    }
+    await this.patientModel.deleteOne({ _id: id });
+    return {
+      deleted: true,
+      name: `${patient.firstName} ${patient.lastName}`,
+    };
+  }
+
+  async deleteManyPatients(
+    dto: DeleteManyPatientsDto,
+  ): Promise<{ deleted: boolean; users: string[] }> {
+    const patients = await this.patientModel
+      .find({ _id: { $in: dto.ids } })
+      .select('firstName lastName')
+      .exec();
+
+    if (!patients.length) {
+      return { deleted: false, users: [] };
+    }
+
+    const users = patients.map((p) =>
+      `${p.firstName ?? ''} ${p.lastName ?? ''}`.trim(),
+    );
+
+    await this.patientModel.deleteMany({ _id: { $in: dto.ids } }).exec();
+
+    return { deleted: true, users };
   }
 }
