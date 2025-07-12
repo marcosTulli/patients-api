@@ -23,6 +23,15 @@ export class PatientsController {
     return this.patientsService.findAll();
   }
 
+  @Get(':id')
+  @HttpCode(HttpStatus.OK)
+  async getPatient(@Param('id') id: string): Promise<Patient> {
+    if (!id) {
+      throw new BadRequestException('Patient id is required');
+    }
+    return this.patientsService.findOnePatientById(id);
+  }
+
   @Post('list')
   @HttpCode(HttpStatus.OK)
   async findAllPaginated(

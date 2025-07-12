@@ -40,6 +40,14 @@ export class PatientsService {
     return { patients, total };
   }
 
+  async findOnePatientById(id: string): Promise<Patient> {
+    const patient = await this.patientModel.findById(id).exec();
+    if (!patient) {
+      throw new BadRequestException(`Patient with id ${id} not found`);
+    }
+    return patient;
+  }
+
   async createPatient(createPatientDto: CreatePatientDto): Promise<Patient> {
     try {
       const patient = new this.patientModel(createPatientDto);
