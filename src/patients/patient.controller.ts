@@ -6,8 +6,8 @@ import {
   Post,
 } from '@nestjs/common';
 import { PatientListDto } from './dto/patient-list.dto';
-import { PatientsService } from './patients.service';
-import { Patient } from './schemas/patient.schema';
+import { PatientsService } from './patient.service';
+import { Patient } from './schema/patient.schema';
 
 @Controller('patients')
 export class PatientsController {

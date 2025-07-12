@@ -1,5 +1,5 @@
 import { FilterQuery } from 'mongoose';
-import { Patient } from '../schemas/patient.schema';
+import { Patient } from '../schema/patient.schema';
 import { PatientListDto } from '../dto/patient-list.dto';
 
 export class PatientFilterBuilder {

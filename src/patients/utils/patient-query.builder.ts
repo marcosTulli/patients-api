@@ -1,7 +1,7 @@
 import { FilterQuery, SortOrder } from 'mongoose';
 import { PatientFilterBuilder } from './patient-filter.builder';
 import { PatientListDto, SortDirection } from '../dto/patient-list.dto';
-import { Patient } from '../schemas/patient.schema';
+import { Patient } from '../schema/patient.schema';
 
 export class PatientQueryBuilder {
   static buildSort(sort: PatientListDto['sort']): Record<string, SortOrder> {
