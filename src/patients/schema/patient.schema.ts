@@ -1,4 +1,4 @@
-import { Prop, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsDateString,
@@ -10,7 +10,8 @@ import {
 } from 'class-validator';
 import { Document } from 'mongoose';
 
-export class Patient extends Document {
+@Schema()
+export class Patient {
   @ApiProperty({ example: 'John', description: 'First name of the patient' })
   @Prop({ required: true })
   @IsString()
@@ -36,6 +37,7 @@ export class Patient extends Document {
     description: 'Phone number of the patient',
     required: false,
   })
+  @Prop()
   @IsOptional()
   @IsPhoneNumber()
   phoneNumber?: string;
@@ -45,9 +47,11 @@ export class Patient extends Document {
     description: 'Date of birth of the patient',
     required: false,
   })
+  @Prop()
   @IsOptional()
   @IsDateString()
   dob?: string;
 }
 
+export type PatientDocument = Patient & Document;
 export const PatientSchema = SchemaFactory.createForClass(Patient);

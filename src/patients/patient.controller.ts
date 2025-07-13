@@ -37,13 +37,11 @@ import {
 @ApiTags('patients')
 @ApiSecurity('ApiKeyAuth')
 @Controller('patients')
-// The ApiKeyGuard is applied to all endpoints as a foundational security layer.
 @UseGuards(ApiKeyGuard)
 export class PatientsController {
   constructor(private readonly patientsService: PatientsService) {}
 
   @Get()
-  // This is a read operation, requiring no additional security on top of the class-level guard.
   @ReadOnlyOperation()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Get all patients' })
@@ -57,7 +55,6 @@ export class PatientsController {
   }
 
   @Get(':id')
-  // Another read operation. The @ReadOnlyOperation makes the intent clear.
   @ReadOnlyOperation()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Get a single patient by ID' })
@@ -72,7 +69,6 @@ export class PatientsController {
   }
 
   @Post('list')
-  // This POST route is also a read operation, so we apply the same decorator.
   @ReadOnlyOperation()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
@@ -117,7 +113,6 @@ export class PatientsController {
   }
 
   @Patch(':id')
-  // A write operation, effortlessly secured by our custom decorator.
   @WriteOnlyOperation()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Update a patient' })
@@ -132,7 +127,6 @@ export class PatientsController {
   }
 
   @Delete(':id')
-  // A write operation, now beautifully declarative.
   @WriteOnlyOperation()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Delete a patient' })
@@ -158,7 +152,6 @@ export class PatientsController {
   }
 
   @Post('delete')
-  // The final write operation, secured and clean.
   @WriteOnlyOperation()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Delete multiple patients' })
