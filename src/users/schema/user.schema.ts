@@ -1,6 +1,6 @@
-import { Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsEnum, IsString, MinLength } from 'class-validator';
+import { IsEmail, IsEnum, IsString } from 'class-validator';
 import { Types } from 'mongoose';
 
 export enum Roles {
@@ -9,6 +9,9 @@ export enum Roles {
 }
 
 export type UserDocument = User & Document & { _id: Types.ObjectId };
+export interface RequestWithUser extends Request {
+  user: User;
+}
 
 @Schema({ timestamps: true })
 export class User {
@@ -17,6 +20,7 @@ export class User {
     description: 'Unique username of the user',
   })
   @IsString()
+  @Prop({ required: true, unique: true })
   username: string;
 
   @ApiProperty({
@@ -24,11 +28,12 @@ export class User {
     description: 'User email address',
   })
   @IsEmail()
+  @Prop({ required: true, unique: true })
   email: string;
 
   @ApiProperty({ example: 'strongPassword123', description: 'User password' })
   @IsString()
-  @MinLength(6)
+  @Prop({ required: true, select: false })
   password: string;
 
   @ApiProperty({
@@ -36,6 +41,7 @@ export class User {
     example: Roles.User,
     description: 'Role of the user',
   })
+  @Prop({ required: false, default: Roles.User })
   @IsEnum(Roles)
   role: Roles;
 }
