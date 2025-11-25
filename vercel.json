@@ -4,7 +4,10 @@
     {
       "src": "api/index.ts",
       "use": "@vercel/node",
-      "config": { "tsconfig": "tsconfig.json" }
+      "config": {
+        "tsconfig": "tsconfig.json",
+        "includeFiles": ["src/**/*"]
+      }
     }
   ],
   "routes": [
@@ -12,5 +15,8 @@
       "src": "/(.*)",
       "dest": "/api/index.ts"
     }
-  ]
+  ],
+  "env": {
+    "PORT": "8080"
+  }
 }
