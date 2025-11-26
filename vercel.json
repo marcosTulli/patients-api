@@ -1,22 +1,16 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "api/index.ts",
-      "use": "@vercel/node",
-      "config": {
-        "tsconfig": "tsconfig.json",
-        "includeFiles": ["src/**/*"]
-      }
+  "functions": {
+    "api/index.ts": {
+      "runtime": "@vercel/node@3.0.15",
+      "maxDuration": 30
     }
-  ],
+  },
+  "buildCommand": "yarn build",
   "routes": [
     {
       "src": "/(.*)",
       "dest": "/api/index.ts"
     }
-  ],
-  "env": {
-    "PORT": "8080"
-  }
+  ]
 }
