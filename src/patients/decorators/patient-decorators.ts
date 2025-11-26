@@ -1,8 +1,8 @@
 import { applyDecorators, UseGuards } from '@nestjs/common';
-import { RolesAllowed } from 'src/common/decorators/roles.decorator';
-import { JwtAuthGuard } from 'src/guards/jwt-guard';
-import { RolesGuard } from 'src/guards/role.guard';
-import { Roles } from 'src/users/schema/user.schema';
+import { RolesAllowed } from '../../common/decorators/roles.decorator';
+import { JwtAuthGuard } from '../../guards/jwt-guard';
+import { RolesGuard } from '../../guards/role.guard';
+import { Roles } from '../../users/schema/user.schema';
 
 export const OperationType = {
   Read: 'read',
