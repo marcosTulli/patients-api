@@ -14,6 +14,8 @@ import AuthModule from './auth/auth.module';
       useFactory: (configService: ConfigService) => ({
         uri: configService.get<string>('MONGO_URL'),
         dbName: configService.get<string>('DB_NAME'),
+        serverSelectionTimeoutMS: 5000,
+        connectTimeoutMS: 10000,
       }),
       inject: [ConfigService],
     }),

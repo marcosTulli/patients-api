@@ -19,7 +19,7 @@ import {
 } from './dto';
 import { PatientsService } from './patient.service';
 import { Patient } from './schema/patient.schema';
-import { ApiKeyGuard } from 'src/guards/api-key.guard';
+import { ApiKeyGuard } from '../guards/api-key.guard';
 import {
   ApiSecurity,
   ApiTags,

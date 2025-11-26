@@ -1,11 +1,16 @@
+// src/main.ts
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import { ExpressAdapter } from '@nestjs/platform-express';
+import { Express } from 'express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  const port = process.env.PORT ?? 8080;
+export async function createApp(server?: Express) {
+  const app = server
+    ? await NestFactory.create(AppModule, new ExpressAdapter(server))
+    : await NestFactory.create(AppModule);
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -16,7 +21,7 @@ async function bootstrap() {
 
   app.enableCors();
 
-  const config = new DocumentBuilder()
+  const swaggerConfig = new DocumentBuilder()
     .setTitle('Patients API')
     .setDescription('Serve and operate patient data')
     .setVersion('1.0')
@@ -26,9 +31,14 @@ async function bootstrap() {
     )
     .build();
 
-  const document = SwaggerModule.createDocument(app, config);
+  const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('api', app, document);
 
-  await app.listen(port);
+  if (!server) {
+    const port = process.env.PORT ?? 8080;
+    await app.listen(port);
+  }
+
+  await app.init();
+  return app;
 }
-void bootstrap();
