@@ -1,7 +1,6 @@
 import { applyDecorators, UseGuards } from '@nestjs/common';
 import { RolesAllowed } from 'src/common/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/guards/jwt-guard';
-
 import { RolesGuard } from 'src/guards/role.guard';
 import { Roles } from 'src/users/schema/user.schema';
 

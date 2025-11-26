@@ -21,11 +21,8 @@
     "noFallthroughCasesInSwitch": false,
 
     "paths": {
-    "src/*": ["src/*"],
-    "@users/*": ["src/users/*"],
-    "@auth/*": ["src/auth/*"],
-    "@common/*": ["src/common/*"]
-}
+      "src/*": ["src/*"]
+    }
 
   }
 }

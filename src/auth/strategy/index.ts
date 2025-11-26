@@ -6,7 +6,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Request } from 'express';
 
-import { User, UserDocument } from '@users/schema/user.schema';
+import { User, UserDocument } from 'src/users/schema/user.schema';
 
 interface JwtPayload {
   sub: string;

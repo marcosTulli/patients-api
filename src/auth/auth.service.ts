@@ -2,8 +2,8 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { LoginDto, SignupDto } from './dto';
-import { UserService } from '@users/user.service';
-import { Roles } from '@users/schema/user.schema';
+import { UserService } from 'src/users/user.service';
+import { Roles } from 'src/users/schema/user.schema';
 import * as argon from 'argon2';
 
 @Injectable()
