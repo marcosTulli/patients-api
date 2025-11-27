@@ -52,7 +52,10 @@ export class PatientsService {
 
   async createPatient(createPatientDto: CreatePatientDto): Promise<Patient> {
     try {
-      const patient = new this.patientModel(createPatientDto);
+      const patient = new this.patientModel({
+        ...createPatientDto,
+        createdAt: new Date(),
+      });
       return await patient.save();
     } catch (error) {
       const mongoError = error as MongoServerError;
