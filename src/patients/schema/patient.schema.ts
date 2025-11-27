@@ -51,6 +51,13 @@ export class Patient {
   @IsOptional()
   @IsDateString()
   dob?: string;
+
+  @ApiProperty({
+    example: '2024-01-15T10:30:00.000Z',
+    description: 'Date when the patient record was created',
+  })
+  @Prop({ default: () => new Date() })
+  createdAt: Date;
 }
 
 export type PatientDocument = Patient & Document;
