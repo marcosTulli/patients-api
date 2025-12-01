@@ -62,3 +62,7 @@ export class Patient {
 
 export type PatientDocument = Patient & Document;
 export const PatientSchema = SchemaFactory.createForClass(Patient);
+
+PatientSchema.index({ firstName: 1 });
+PatientSchema.index({ lastName: 1 });
+PatientSchema.index({ email: 1 });
