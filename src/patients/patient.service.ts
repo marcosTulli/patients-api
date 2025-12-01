@@ -25,6 +25,33 @@ export class PatientsService {
     return this.patientModel.find().exec();
   }
 
+  async searchPatients(query: string, limit = 10): Promise<Patient[]> {
+    if (!query || !query.trim()) {
+      return [];
+    }
+
+    const sanitized = query.trim();
+
+    return this.patientModel
+      .find(
+        {
+          $or: [
+            { firstName: new RegExp(sanitized, 'i') },
+            { lastName: new RegExp(sanitized, 'i') },
+            { email: new RegExp(sanitized, 'i') },
+          ],
+        },
+        {
+          firstName: 1,
+          lastName: 1,
+          email: 1,
+        },
+      )
+      .limit(limit)
+      .sort({ firstName: 1 })
+      .exec();
+  }
+
   async findAllPaginated(
     patientListDto: PatientListDto,
   ): Promise<{ patients: Patient[]; total: number }> {

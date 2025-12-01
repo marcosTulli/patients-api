@@ -9,6 +9,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -52,6 +53,41 @@ export class PatientsController {
   })
   async findAll(): Promise<Patient[]> {
     return this.patientsService.findAll();
+  }
+
+  @Get('search')
+  @ReadOnlyOperation()
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Search patients by first name, last name, or email',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'List of matching patients',
+    schema: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          _id: { type: 'string' },
+          firstName: { type: 'string' },
+          lastName: { type: 'string' },
+          email: { type: 'string' },
+        },
+      },
+    },
+  })
+  async searchPatients(
+    @Param() _: any,
+    @Body() body?: any,
+    @Query('q') q?: string,
+    @Query('limit') limit?: number,
+  ) {
+    if (!q || !q.trim()) {
+      throw new BadRequestException('Query parameter "q" is required');
+    }
+
+    return this.patientsService.searchPatients(q, Number(limit) || 10);
   }
 
   @Get(':id')
